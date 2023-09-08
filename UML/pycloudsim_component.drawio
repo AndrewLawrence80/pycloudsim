@@ -1,0 +1,127 @@
+<mxfile host="Electron" modified="2023-09-05T11:53:21.527Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="0EnQvp69cRUjM4UiVAkC" version="21.6.8" type="device">
+  <diagram name="Page-1" id="b5b7bab2-c9e2-2cf4-8b2a-24fd1a2a6d21">
+    <mxGraphModel dx="1434" dy="822" grid="1" gridSize="14" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WfINUbGZBhklNuxZs36y-2" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Datacenter&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ HostDict: Dict&amp;lt;Host&amp;gt;&lt;br&gt;+ VmDict: Dict&amp;lt;Vm&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ CloudletDict: Dict&amp;lt;Cloudlet&amp;gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="30" width="1030" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-3" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" vertex="1" parent="WfINUbGZBhklNuxZs36y-2">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-1" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Host0&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="115" y="120" width="440" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-2" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-1" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-4" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Vm0&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Scheduler: Scheduler&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="150" y="245" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-5" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-4" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-10" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Vm1&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Scheduler: Scheduler&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="245" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-11" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-10" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="pWebAirJB7kH71mUJxBp-18" target="pWebAirJB7kH71mUJxBp-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-14" value="Event" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;rounded=0;" vertex="1" connectable="0" parent="WfINUbGZBhklNuxZs36y-13">
+          <mxGeometry x="0.28" y="5" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-18" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Broker&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ SubmittedVmList: List&amp;lt;Vm&amp;gt;&lt;br&gt;+ SubmittedCloudletList: List&amp;lt;Cloudlet&amp;gt;&amp;nbsp;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="115" y="430" width="655" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-19" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-18" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-20" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Host1&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="610" y="120" width="440" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-21" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-20" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-22" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Vm2&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Scheduler: Scheduler&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="650" y="245" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-23" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-22" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-24" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Vm3&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ PeList: List&amp;lt;Pe&amp;gt;&lt;br&gt;+ RAM: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Bandwidth: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Storage: long&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Scheduler: Scheduler&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="850" y="245" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-25" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-24" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-26" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;RequestDeque&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ RequestDeque: Deque&amp;lt;Request&amp;gt;&lt;br&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="70" y="580" width="440" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-27" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-26" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.544;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="pWebAirJB7kH71mUJxBp-28" target="pWebAirJB7kH71mUJxBp-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-10" value="Event" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;rounded=0;" vertex="1" connectable="0" parent="WfINUbGZBhklNuxZs36y-7">
+          <mxGeometry x="-0.0132" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="pWebAirJB7kH71mUJxBp-28" target="pWebAirJB7kH71mUJxBp-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-22" value="Event" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;rounded=0;" vertex="1" connectable="0" parent="WfINUbGZBhklNuxZs36y-21">
+          <mxGeometry x="-0.16" y="-2" relative="1" as="geometry">
+            <mxPoint x="-13" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1.001;entryY=0.416;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;labelBackgroundColor=none;fontColor=default;" edge="1" parent="1" source="pWebAirJB7kH71mUJxBp-28" target="WfINUbGZBhklNuxZs36y-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="620" />
+              <mxPoint x="1150" y="238" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WfINUbGZBhklNuxZs36y-24" value="Event" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;labelBackgroundColor=none;rounded=0;" vertex="1" connectable="0" parent="WfINUbGZBhklNuxZs36y-23">
+          <mxGeometry x="0.131" y="-5" relative="1" as="geometry">
+            <mxPoint x="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-28" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;Simulation&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Clock: Clock&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ EventQueue: PriorityQueue&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ ClockListener: Listener&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="610" y="580" width="490" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pWebAirJB7kH71mUJxBp-29" value="" style="shape=component;jettyWidth=8;jettyHeight=4;labelBackgroundColor=none;rounded=0;" parent="pWebAirJB7kH71mUJxBp-28" vertex="1">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-24" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
