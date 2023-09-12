@@ -2,9 +2,15 @@
 A Pe (Processing Element) represents a CPU core of a physical machine,
 defined in terms of Millions Instructions Per Second (MIPS) rating.
 """
+from uuid import uuid1, UUID
+from enum import Enum
 
 
 class Pe:
+    class State(Enum):
+        FREE = 0
+        BUSY = 1
+
     def __init__(self, mips_capacity: int) -> None:
         """
         Parameters
@@ -14,36 +20,24 @@ class Pe:
         """
         if mips_capacity <= 0:
             raise ValueError("MIPS capacity of Pe must greater than 0")
+        self.uuid = uuid1()
         self.mips_capacity = 1.0*mips_capacity
         self.utilization_rate = 0.0
+        self.state = Pe.State.FREE
 
-    def __str__(self) -> str:
-        return "Pe %s, mips capacity %d" % (id(self), self.mips_capacity)
+    def get_uuid(self) -> UUID:
+        return self.uuid
 
-    def allocate(self, utilization_rate: float):
-        """
-        Parameters
-        ----------
-        utilization_rate: float
-            Amount of CPU core will be used for a certain Cloudlet
-            when the Cloudlet is scheduled to be executed on the Pe
-        """
-        if self.utilization_rate <= 0:
+    def allocate(self, utilization_rate: float) -> None:
+        if utilization_rate <= 0 or utilization_rate > 1:
             raise ValueError(
-                "Cloudlet Pe utilization rate must greater than 0")
+                "Cloudlet Pe utilization rate must beween 0 and 1")
         self.utilization_rate += utilization_rate
 
-    def deallocate(self, utilization_rate: float):
-        """
-        Parameters
-        ----------
-        utilization_rate: float
-            Amount of CPU core will be released for a certain Cloudlet
-            when the Cloudlet uses up the assigned time slice or finishes
-        """
-        if self.utilization_rate-utilization_rate < 0:
+    def deallocate(self, utilization_rate: float) -> None:
+        if utilization_rate <= 0 or utilization_rate > 1:
             raise ValueError(
-                "Pe utilization will below 0 after Cloudlet releases")
+                "Cloudlet Pe utilization rate must beween 0 and 1")
         self.utilization_rate -= utilization_rate
 
     def get_mips_capacity(self) -> float:
@@ -54,3 +48,9 @@ class Pe:
 
     def get_utilization_rate_available(self) -> float:
         return 1-self.utilization_rate
+
+    def get_state(self) -> State:
+        return self.state
+
+    def set_state(self, state: State) -> None:
+        self.state = state

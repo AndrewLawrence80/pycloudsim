@@ -1,7 +1,14 @@
+from __future__ import annotations
 from ..events import Event
 from ..utils import MinHeap
-from .simulation_entity import SimulationEntity
+from ..entity import SimulationEntity
+from enum import Enum
+import threading
 import numpy as np
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..datacenters import Datacenter
+    from ..listeners import EventListener, CircularClockListener
 
 
 class Simulator(SimulationEntity):
@@ -13,11 +20,20 @@ class Simulator(SimulationEntity):
     which accepts scheduled event from simulation entities 
     and act properly when event occurs
     """
+    class State(Enum):
+        """The simulation is initailized but not running yet"""
+        INITIALIZED = 0
+        """The simulation is running"""
+        RUNNING = 1
+        """The simulation is paused"""
+        PAUSED = 1
+        """The simulation end normaly or the terminate time arrives"""
+
     def event_comparator(event_a: Event, event_b: Event) -> bool:
         # The event with small start delay goes first
-        if event_a.get_start_delay() < event_b.get_start_delay():
+        if event_a.get_start_time() < event_b.get_start_time():
             return True
-        elif event_a.get_start_delay() > event_b.get_start_delay():
+        elif event_a.get_start_time() > event_b.get_start_time():
             return False
         else:
             # If 2 or more events occur at the same time,
@@ -32,60 +48,68 @@ class Simulator(SimulationEntity):
                 # their order doesn't matter
                 return False
 
-    def __init__(self, time_terminate: float = None) -> None:
+    def __init__(self) -> None:
         self.event_queue = MinHeap(Simulator.event_comparator)
         self.global_clock = 0.0
-        # set termination event
-        if time_terminate is not None:
-            if time_terminate <= 0:
-                raise ValueError(
-                    "Simulation terminate time must greater than 0")
-        else:
-            self.event_queue.push(Event(source=None, target=None, event_type=Event.TYPE.SIMULATION_TERMINATE,
-                                  extra_data=None, start_delay=np.finfo(np.float64).max))
+        self.event_listener_list = []
+        self.circular_clock_listener_list = []
+        self.state = Simulator.State.INITIALIZED
+        self.datacenter = None
+        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE,
+                              extra_data={"simulator": self}, start_time=np.finfo(np.float64).max))
 
     def get_global_clock(self) -> float:
         return self.global_clock
 
+    def set_termination_time(self, terimination_time: float):
+        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE,
+                              extra_data={"simulator": self}, start_time=terimination_time))
+
     def submit(self, event: Event) -> None:
         self.event_queue.push(event)
+
+    def process(self, event: Event):
+        for event_listener in self.event_listener_list:
+            event_listener.update(event, self)
+        if event.get_event_type() == Event.TYPE.SIMULATION_TERMINATE:
+            self.datacenter.process_simulation_terminate(event)
+        elif event.get_event_type() == Event.TYPE.SIMULATION_PAUSE:
+            self.process_simulation_pause(event)
+        elif event.get_event_type() == Event.TYPE.CIRCULAR_CLOCK_EVENT:
+            for circular_clock_listener in self.circular_clock_listener_list:
+                circular_clock_listener.update(self)
+        else:
+            self.send(event)
+
+    def process_simulation_terminate(self, event: Event):
+        pass
+
+    def process_simulation_pause(self, event: Event):
+        self.state = Simulator.State.PAUSED
 
     def send(self, event: Event) -> None:
         event.get_target().process(event)
 
-    def run(self) -> None:
-        while not self.event_queue.is_empty():
+    def run_util_pause_or_terminate(self) -> None:
+        self.state = Simulator.State.RUNNING
+        while self.state == Simulator.State.RUNNING and not self.event_queue.is_empty():
             event = self.event_queue.pop()
-            self.global_clock += event.get_start_delay()
+            self.global_clock = event.get_start_time()
             self.process(event)
 
-    def process(self, event: Event):
-        if event.get_event_type() == Event.TYPE.SIMULATION_TERMINATE:
-            self.process_simulation_terminate(event)
-        elif event.get_event_type() == Event.TYPE.HOST_CREATION:
-            self.send(event)
-        elif event.get_event_type() == Event.TYPE.VM_FAIL:
-            pass
-        elif event.get_event_type() == Event.TYPE.VM_DESTORY:
-            pass
-        elif event.get_event_type() == Event.TYPE.VM_BIND:
-            self.send(event)
-        elif event.get_event_type() == Event.TYPE.VM_POWEROFF:
-            pass
-        elif event.get_event_type() == Event.TYPE.VM_POWERON:
-            pass
-        elif event.get_event_type() == Event.TYPE.CLOUDLET_FAIL:
-            pass
-        elif event.get_event_type() == Event.TYPE.CLOUDLET_FINISH:
-            pass
-        elif event.get_event_type() == Event.TYPE.CLOUDLET_BIND:
-            pass
-        elif event.get_event_type() == Event.TYPE.CLOUDLET_DETACH:
-            pass
-        elif event.get_event_type() == Event.TYPE.CLOUDLET_ATTACH:
-            pass
-        else:
-            raise ValueError("Event type is not defined")
+    def add_event_listener(self, listener: EventListener):
+        self.event_listener_list.append(listener)
 
-    def process_simulation_terminate(self, event: Event):
-        pass
+    def add_circular_clock_listener(self, listener: CircularClockListener):
+        self.circular_clock_listener_list.append(listener)
+        self.event_queue.push(Event(
+            source=None, target=self, event_type=Event.TYPE.CIRCULAR_CLOCK_EVENT, extra_data=None, start_time=0.0))
+
+    def get_state(self) -> State:
+        return self.state
+
+    def set_stat(self, state: State):
+        self.state = state
+
+    def set_datacenter(self, datacenter: Datacenter):
+        self.datacenter = datacenter

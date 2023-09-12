@@ -58,7 +58,7 @@ class MinHeap:
         # when self.size is 0
         if self.size*2 <= len(self.heap):
             for _ in range(self.size):
-                self.heap.pop()
+                self.heap.pop()  # python list pop to remove the last element
         return top
 
     def push(self, item: Any) -> None:
@@ -80,3 +80,7 @@ class MinHeap:
 
     def get_size(self) -> int:
         return self.size
+
+    def clear(self) -> None:
+        while not self.is_empty():
+            self.pop()

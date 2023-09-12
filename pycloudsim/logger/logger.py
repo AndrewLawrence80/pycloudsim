@@ -8,6 +8,9 @@ class Logger:
     _lock = threading.Lock()
 
     def __new__(cls):
+        """
+        Use singleton pattern to ensure a unique gloabl logger
+        """
         if cls._instance is None:
             cls._lock.acquire()
             if cls._instance is None:

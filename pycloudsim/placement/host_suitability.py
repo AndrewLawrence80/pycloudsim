@@ -1,25 +1,27 @@
-from ..hosts import Host
-from ..vms import Vm
-from .suitability import Suitability
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ..hosts import Host
+    from ..vms import Vm
 
 
-class HostSuitability(Suitability):
+class HostSuitability:
     def __init__(self, host: Host) -> None:
         self.host = host
-        self.is_suitable = False
+        self.suitability = False
 
-    def is_suitable_for(self, target: Vm) -> bool:
-        self.is_suitable = False
+    def update_suitability(self, target: Vm) -> bool:
+        self.suitability = False
         if (
             target.get_num_pes() <= self.host.get_num_pes() and
             target.get_size_ram() <= self.host.get_ram().get_size_available() and
             target.get_size_storage() <= self.host.get_storage().get_size_available() and
             target.get_size_bandwidth() <= self.host.get_bandwidth().get_size_available()
         ):
-            self.is_suitable = True
+            self.suitability = True
 
-    def get_is_suitable(self) -> bool:
-        return self.is_suitable
+    def get_suitability(self) -> bool:
+        return self.suitability
 
     def get_host(self) -> Host:
         return self.host
