@@ -8,7 +8,7 @@ class CircularClockListener:
     def __init__(self, cicular_interval: float) -> None:
         self.circular_interval = cicular_interval
 
-    def update(simulator) -> None:
+    def update(self, simulator: Simulator) -> None:
         pass
 
     def get_circular_interval(self) -> float:

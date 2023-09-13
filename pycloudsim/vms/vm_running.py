@@ -127,8 +127,6 @@ class VmRunning(Vm):
         cloudlet_running.set_vm_running(self)
 
     def release_cloudlet(self, cloudlet_running: CloudletRunning) -> None:
-        cloudlet_running.set_vm_running(None)
-
         self.cloudlet_running_dict.pop(cloudlet_running.get_uuid())
 
         self.bandwidth.dealloate(cloudlet_running.get_required_bandwidth())

@@ -61,8 +61,7 @@ class CloudletRunning(Cloudlet):
 
     def set_vm_running(self, vm_running: VmRunning) -> None:
         self.vm_running = vm_running
-        if vm_running is not None:
-            self.cloudlet.set_vm_uuid(vm_running.get_uuid())
+        self.cloudlet.set_vm_uuid(vm_running.get_uuid())
 
     def get_vm_running(self) -> Optional[VmRunning]:
         return self.vm_running

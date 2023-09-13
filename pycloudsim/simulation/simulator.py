@@ -56,14 +56,14 @@ class Simulator(SimulationEntity):
         self.circular_clock_listener_list = []
         self.state = Simulator.State.INITIALIZED
         self.datacenter = None
-        self.is_terminate_time_set=False
+        self.is_terminate_time_set = False
         self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE, extra_data={"simulator": self}, start_time=np.finfo(np.float64).max))
 
     def get_global_clock(self) -> float:
         return self.global_clock
 
     def set_termination_time(self, terimination_time: float):
-        self.is_terminate_time_set=True
+        self.is_terminate_time_set = True
         self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE, extra_data={"simulator": self}, start_time=terimination_time))
 
     def submit(self, event: Event) -> None:
