@@ -5,11 +5,11 @@ from .host_suitability import HostSuitability
 from typing import List, Optional, Dict, TYPE_CHECKING
 if TYPE_CHECKING:
     from ..hosts import Host
-    from ..vms import Vm
+    from ..vms import VmRunning
 
 
 class VmPlacementMaxFit(VmPlacement):
-    def get_fit_map(self, host_list: List[Host], vm_list: List[Vm]) -> Optional[Dict]:
+    def get_fit_map(self, host_list: List[Host], vm_to_run_list: List[VmRunning]) -> Optional[Dict]:
         def host_suitability_comparator(suitability_a: HostSuitability, suitability_b: HostSuitability) -> bool:
             # if host a is suitable for vm while b is not
             if suitability_a.get_suitability() and not suitability_b.get_suitability():
@@ -36,17 +36,17 @@ class VmPlacementMaxFit(VmPlacement):
         host_suitability_heap = MinHeap(host_suitability_comparator)
         for host in host_list:
             host_suitability_heap.push(HostSuitability(host))
-        for vm in vm_list:
+        for vm_to_run in vm_to_run_list:
             for host_suitability in host_suitability_heap:
-                host_suitability.update_suitability(vm)
+                host_suitability.update_suitability(vm_to_run)
             host_suitability_heap.reheapify()
             suitability_head = host_suitability_heap.pop()
             if suitability_head.get_suitability() == False:
                 is_fit_successful = False
                 break
             else:
-                suitability_head.get_host().bind_vm(vm)
-                fit_map[vm.get_uuid()] = suitability_head.get_host().get_uuid()
+                suitability_head.get_host().bind_vm(vm_to_run)
+                fit_map[vm_to_run.get_uuid()] = suitability_head.get_host().get_uuid()
                 host_suitability_heap.push(suitability_head)
 
         if not is_fit_successful:

@@ -38,14 +38,12 @@ class MinHeap:
 
     def peek(self) -> Any:
         if self.size <= 0:
-            raise IndexError(
-                "Heap is already empty, current size %d" % self.size)
+            raise IndexError("Heap is already empty, current size %d" % self.size)
         return self.heap[0]
 
     def pop(self) -> Any:
         if self.size <= 0:
-            raise IndexError(
-                "Heap is already empty, current size %d" % self.size)
+            raise IndexError("Heap is already empty, current size %d" % self.size)
         top = self.heap[0]
         self.swap(0, self.size-1)
         self.size -= 1

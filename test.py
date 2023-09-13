@@ -46,24 +46,21 @@ if __name__ == "__main__":
         pe_list = []
         for _ in range(config["host"]["pes"]):
             pe_list.append(Pe(config["host"]["mips"]))
-        host_list.append(Host(
-            pe_list, id, config["host"]["ram"], config["host"]["storage"], config["host"]["bandwidth"]))
+        host_list.append(Host(pe_list, id, config["host"]["ram"], config["host"]["storage"], config["host"]["bandwidth"]))
     datacenter = Datacenter(host_list)
     simulator.set_datacenter(datacenter)
     broker = Broker(simulator, datacenter)
 
     vm_list = []
     for id in range(config["vm"]["num"]):
-        vm = Vm(id, config["vm"]["host_mips_factor"], config["vm"]["pes"],
-                config["vm"]["ram"], config["vm"]["storage"], config["vm"]["bandwidth"])
+        vm = Vm(id, config["vm"]["host_mips_factor"], config["vm"]["pes"], config["vm"]["ram"], config["vm"]["storage"], config["vm"]["bandwidth"])
         vm.set_startup_delay(config["vm"]["startup_delay"])
         vm.set_shutdown_delay(config["vm"]["shutdown_delay"])
         vm_list.append(vm)
     broker.submit_vm_list(vm_list)
     cloudlet_list = []
     for id in range(config["cloudlet"]["num"]):
-        cloudlet = Cloudlet(id, config["cloudlet"]["length"], config["cloudlet"]["pes"], config["cloudlet"]["utilization_pe"],
-                            config["cloudlet"]["required_ram"], config["cloudlet"]["required_storage"], config["cloudlet"]["required_bandwidth"])
+        cloudlet = Cloudlet(id, config["cloudlet"]["length"], config["cloudlet"]["pes"], config["cloudlet"]["utilization_pe"], config["cloudlet"]["required_ram"], config["cloudlet"]["required_storage"], config["cloudlet"]["required_bandwidth"])
         cloudlet_list.append(cloudlet)
     broker.submit_cloudlet_list(cloudlet_list)
     simulator.run_util_pause_or_terminate()

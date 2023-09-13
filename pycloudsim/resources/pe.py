@@ -30,14 +30,12 @@ class Pe:
 
     def allocate(self, utilization_rate: float) -> None:
         if utilization_rate <= 0 or utilization_rate > 1:
-            raise ValueError(
-                "Cloudlet Pe utilization rate must beween 0 and 1")
+            raise ValueError("Cloudlet Pe utilization rate must beween 0 and 1")
         self.utilization_rate += utilization_rate
 
     def deallocate(self, utilization_rate: float) -> None:
         if utilization_rate <= 0 or utilization_rate > 1:
-            raise ValueError(
-                "Cloudlet Pe utilization rate must beween 0 and 1")
+            raise ValueError("Cloudlet Pe utilization rate must beween 0 and 1")
         self.utilization_rate -= utilization_rate
 
     def get_mips_capacity(self) -> float:

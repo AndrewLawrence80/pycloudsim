@@ -6,6 +6,7 @@ from ..cloudlets import Cloudlet
 from ..events import Event
 from typing import List, TYPE_CHECKING
 
+
 class Broker:
     """
     A Broker represents a intermediate proxy communicating customers and a datacener.
@@ -22,11 +23,9 @@ class Broker:
     def submit_vm_list(self, vm_list: List[Vm]):
         for vm in vm_list:
             vm.set_state(Vm.State.SUBMITTED)
-        self.simulator.submit(Event(source=None, target=self.datacenter,
-                              event_type=Event.TYPE.VM_BIND, extra_data={"vm_list": vm_list, "simulator": self.simulator}, start_time=self.simulator.get_global_clock()))
+        self.simulator.submit(Event(source=None, target=self.datacenter, event_type=Event.TYPE.VM_BIND, extra_data={"vm_list": vm_list, "simulator": self.simulator}, start_time=self.simulator.get_global_clock()))
 
     def submit_cloudlet_list(self, cloudlet_list: List[Cloudlet]):
         for cloudlet in cloudlet_list:
             cloudlet.set_state(Cloudlet.State.SUBMITTED)
-        self.simulator.submit(Event(source=None, target=self.datacenter, event_type=Event.TYPE.CLOUDLET_SUBMIT, extra_data={
-                              "cloudlet_list": cloudlet_list, "simulator": self.simulator}, start_time=self.simulator.get_global_clock()))
+        self.simulator.submit(Event(source=None, target=self.datacenter, event_type=Event.TYPE.CLOUDLET_SUBMIT, extra_data={"cloudlet_list": cloudlet_list, "simulator": self.simulator}, start_time=self.simulator.get_global_clock()))

@@ -4,9 +4,10 @@ from collections import defaultdict
 from ..resources import Pe, RAM, Storage, Bandwidth
 from typing import List, Dict
 from typing import TYPE_CHECKING
-from ..vms import Vm
+from ..vms import VmRunning
 if TYPE_CHECKING:
     from ..datacenters import Datacenter
+    from ..vms import Vm
 
 
 class Host:
@@ -45,7 +46,7 @@ class Host:
         self.vm_storage_dict = {}
         self.bandwidth = Bandwidth(size_bandwidth)
         self.vm_bandwidth_dict = {}
-        self.vm_dict = {}
+        self.vm_running_dict = {}
         self.datacenter = None
 
     def _build_pe_dict(self, pe_list: List[Pe]) -> Dict[UUID, Pe]:
@@ -93,51 +94,65 @@ class Host:
     def get_vm_bandwidth_dict(self) -> Dict[UUID, Bandwidth]:
         return self.vm_bandwidth_dict
 
-    def bind_vm(self, vm: Vm) -> None:
-        for _ in range(vm.get_num_pes()):
-            for host_pe in self.get_host_pe_dict().values():
+    def get_vm_running_dict(self) -> Dict[UUID, VmRunning]:
+        return self.vm_running_dict
+
+    def bind_vm(self, vm_running: VmRunning) -> None:
+        for _ in range(vm_running.get_num_pes()):
+            for host_pe in self.host_pe_dict.values():
                 if host_pe.get_state() == Pe.State.FREE:
                     host_pe.set_state(Pe.State.BUSY)
                     # create virtual pe for vm
-                    vm_pe = Pe(vm.get_host_mips_factor() *
-                               host_pe.get_mips_capacity())
+                    vm_pe = Pe(vm_running.get_host_mips_factor() * host_pe.get_mips_capacity())
                     # construct vm and host pe mapping
                     self.vm_pe_mapping[vm_pe.get_uuid()] = host_pe.get_uuid()
                     # assign virutal pe to vm
-                    self.vm_pe_dict[vm.get_uuid()].append(vm_pe.get_uuid())
-                    vm.add_vm_pe(vm_pe)
+                    self.vm_pe_dict[vm_running.get_uuid()].append(vm_pe.get_uuid())
+                    vm_running.add_vm_pe(vm_pe)
                     break
-        self.num_pes_available -= vm.get_num_pes()
-        vm_ram = RAM(vm.get_size_ram())
+        self.num_pes_available -= vm_running.get_num_pes()
+        vm_pe=list(vm_running.get_vm_pe_dict().values())[0]
+        vm_running.set_mips(vm_pe.get_mips_capacity())
+
+        vm_ram = RAM(vm_running.get_size_ram())
         self.ram.allocate(vm_ram.get_size_capacity())
         self.vm_ram_dict[vm_ram.get_uuid()] = vm_ram
-        vm.set_ram(vm_ram)
-        vm_storage = Storage(vm.get_size_storage())
+        vm_running.set_ram(vm_ram)
+
+        vm_storage = Storage(vm_running.get_size_storage())
         self.storage.allocate(vm_storage.get_size_capacity())
         self.vm_storage_dict[vm_storage.get_uuid()] = vm_storage
-        vm.set_storage(vm_storage)
-        vm_bandwidth = Bandwidth(vm.get_size_bandwidth())
+        vm_running.set_storage(vm_storage)
+
+        vm_bandwidth = Bandwidth(vm_running.get_size_bandwidth())
         self.bandwidth.allocate(vm_bandwidth.get_size_capacity())
         self.vm_bandwidth_dict[vm_bandwidth.get_uuid()] = vm_bandwidth
-        vm.set_bandwidth(vm_bandwidth)
-        self.vm_dict[vm.get_uuid()] = vm
-        vm.set_host(self)
-        
-    def release_vm(self, vm: Vm) -> None:
-        self.vm_dict.pop(vm.get_uuid())
-        self.vm_bandwidth_dict.pop(vm.get_bandwidth().get_uuid())
-        self.bandwidth.dealloate(vm.get_bandwidth().get_size_capacity())
-        self.vm_storage_dict.pop(vm.get_storage().get_uuid())
-        self.storage.dealloate(vm.get_storage().get_size_capacity())
-        self.vm_ram_dict.pop(vm.get_ram().get_uuid())
-        self.ram.dealloate(vm.get_ram().get_size_capacity())
-        self.num_pes_available += vm.get_num_pes()
-        vm_pe_uuid_list = self.vm_pe_dict.pop(vm.get_uuid())
+        vm_running.set_bandwidth(vm_bandwidth)
+
+        self.vm_running_dict[vm_running.get_uuid()] = vm_running
+        vm_running.set_host(self)
+
+    def release_vm(self, vm_running: VmRunning) -> None:
+        self.vm_running_dict.pop(vm_running.get_uuid())
+
+        self.vm_bandwidth_dict.pop(vm_running.get_bandwidth().get_uuid())
+        self.bandwidth.dealloate(vm_running.get_bandwidth().get_size_capacity())
+        vm_running.set_bandwidth(None)
+
+        self.vm_storage_dict.pop(vm_running.get_storage().get_uuid())
+        self.storage.dealloate(vm_running.get_storage().get_size_capacity())
+        vm_running.set_storage(None)
+
+        self.vm_ram_dict.pop(vm_running.get_ram().get_uuid())
+        self.ram.dealloate(vm_running.get_ram().get_size_capacity())
+        vm_running.set_ram(None)
+
+        vm_running.get_vm_pe_dict().clear()
+        self.num_pes_available += vm_running.get_num_pes()
+        vm_pe_uuid_list = self.vm_pe_dict.pop(vm_running.get_uuid())
         for vm_pe_uuid in vm_pe_uuid_list:
-            self.host_pe_dict[self.vm_pe_mapping[vm_pe_uuid]
-                              ].set_state(Pe.State.FREE)
+            self.host_pe_dict[self.vm_pe_mapping[vm_pe_uuid]].set_state(Pe.State.FREE)
             self.vm_pe_mapping.pop(vm_pe_uuid)
-        vm.set_state(Vm.State.DESTROYED)
 
     def get_datacenter(self):
         return self.datacenter

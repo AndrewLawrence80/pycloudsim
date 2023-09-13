@@ -1,9 +1,10 @@
 from __future__ import annotations
 from enum import Enum
-from uuid import UUID, uuid1
+from uuid import uuid1
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..vms import Vm
+    from uuid import UUID
 
 
 class Cloudlet:
@@ -73,8 +74,14 @@ class Cloudlet:
         if utilization_pe <= 0:
             raise ValueError("Cloudlet utilization of Pe must greater than 0")
         self.utilization_pe = 1.0*utilization_pe
+        if required_ram < 0:
+            raise ValueError("Cloudlet requested ram must no less than 0")
         self.required_ram = required_ram
+        if required_storage < 0:
+            raise ValueError("Cloudlet required storage must no less than 0")
         self.required_storage = required_storage
+        if required_bandwidth < 0:
+            raise ValueError("Cloudlet required bandwidth must no less than 0")
         self.required_bandwidth = required_bandwidth
         # By default the state is initailized as ```CREATED```
         self.state = Cloudlet.State.CREATED
@@ -82,7 +89,7 @@ class Cloudlet:
         self.start_time = 0.0
         self.end_time = 0.0
 
-        self.vm = None
+        self.vm_uuid = None
 
     def get_uuid(self) -> UUID:
         return self.uuid
@@ -117,11 +124,17 @@ class Cloudlet:
     def get_start_time(self) -> float:
         return self.start_time
 
+    def set_start_time(self, start_time: float) -> None:
+        self.start_time = start_time
+
     def get_end_time(self) -> float:
         return self.end_time
 
-    def get_vm(self):
-        return self.vm
+    def set_end_time(self, end_time: float) -> None:
+        self.end_time = end_time
 
-    def set_vm(self, vm: Vm):
-        self.vm = vm
+    def get_vm_uuid(self) -> UUID:
+        return self.vm_uuid
+
+    def set_vm_uuid(self, uuid: UUID):
+        self.vm_uuid = uuid

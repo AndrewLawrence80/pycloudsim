@@ -55,14 +55,14 @@ class Event:
         the host events are not implemented yet.
         """
         """
-        Add host(s) when simulation is running
-        """
-        HOST_ADD = 200
-
-        """
         Remove host(s) when simulation is running
         """
-        HOST_REMOVE = 201
+        HOST_REMOVE = 200
+        
+        """
+        Add host(s) when simulation is running
+        """
+        HOST_ADD = 201
 
         """
         Poweron host(s) when simulation is running

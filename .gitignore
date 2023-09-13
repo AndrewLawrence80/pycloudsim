@@ -1,5 +1,6 @@
 # drawio file created by Drawio.desktop
 *.bkp
+*.dtmp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

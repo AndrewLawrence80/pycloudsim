@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ..hosts import Host
-    from ..vms import Vm
+    from ..vms import VmRunning
 
 
 class HostSuitability:
@@ -10,7 +10,7 @@ class HostSuitability:
         self.host = host
         self.suitability = False
 
-    def update_suitability(self, target: Vm) -> bool:
+    def update_suitability(self, target: VmRunning) -> bool:
         self.suitability = False
         if (
             target.get_num_pes() <= self.host.get_num_pes() and

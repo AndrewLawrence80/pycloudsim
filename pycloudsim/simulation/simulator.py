@@ -50,20 +50,21 @@ class Simulator(SimulationEntity):
 
     def __init__(self) -> None:
         self.event_queue = MinHeap(Simulator.event_comparator)
+        self.global_clock_prev = 0.0
         self.global_clock = 0.0
         self.event_listener_list = []
         self.circular_clock_listener_list = []
         self.state = Simulator.State.INITIALIZED
         self.datacenter = None
-        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE,
-                              extra_data={"simulator": self}, start_time=np.finfo(np.float64).max))
+        self.is_terminate_time_set=False
+        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE, extra_data={"simulator": self}, start_time=np.finfo(np.float64).max))
 
     def get_global_clock(self) -> float:
         return self.global_clock
 
     def set_termination_time(self, terimination_time: float):
-        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE,
-                              extra_data={"simulator": self}, start_time=terimination_time))
+        self.is_terminate_time_set=True
+        self.event_queue.push(Event(source=None, target=self, event_type=Event.TYPE.SIMULATION_TERMINATE, extra_data={"simulator": self}, start_time=terimination_time))
 
     def submit(self, event: Event) -> None:
         self.event_queue.push(event)
@@ -72,7 +73,7 @@ class Simulator(SimulationEntity):
         for event_listener in self.event_listener_list:
             event_listener.update(event, self)
         if event.get_event_type() == Event.TYPE.SIMULATION_TERMINATE:
-            self.datacenter.process_simulation_terminate(event)
+            self.process_simulation_terminate(event)
         elif event.get_event_type() == Event.TYPE.SIMULATION_PAUSE:
             self.process_simulation_pause(event)
         elif event.get_event_type() == Event.TYPE.CIRCULAR_CLOCK_EVENT:
@@ -80,9 +81,12 @@ class Simulator(SimulationEntity):
                 circular_clock_listener.update(self)
         else:
             self.send(event)
+        self.global_clock_prev = self.global_clock
 
     def process_simulation_terminate(self, event: Event):
-        pass
+        if not self.is_terminate_time_set:
+            self.global_clock = self.global_clock_prev
+        self.datacenter.process_simulation_terminate(event)
 
     def process_simulation_pause(self, event: Event):
         self.state = Simulator.State.PAUSED

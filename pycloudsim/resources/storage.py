@@ -26,8 +26,7 @@ class Storage:
         if amount < 0:
             raise ValueError("Storage to allocate must no less than 0 MB")
         elif self.size_available < amount:
-            raise RuntimeError(
-                "Allocate amount exceeds available storage size")
+            raise RuntimeError("Allocate amount exceeds available storage size")
         self.size_available -= amount
 
     def dealloate(self, amount: float) -> None:

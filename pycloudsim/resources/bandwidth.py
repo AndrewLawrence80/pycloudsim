@@ -27,8 +27,7 @@ class Bandwidth:
         if amount < 0:
             raise ValueError("Bandwidth to allocate must no less than 0 Mbps")
         elif self.size_available < amount:
-            raise RuntimeError(
-                "Allocate amount exceeds available bandwidth size")
+            raise RuntimeError("Allocate amount exceeds available bandwidth size")
         self.size_available -= amount
 
     def dealloate(self, amount: float) -> None:
