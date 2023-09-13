@@ -16,6 +16,13 @@ if TYPE_CHECKING:
 
 class Datacenter(SimulationEntity):
     def __init__(self, host_list: List[Host]) -> None:
+        """
+        A Datacenter consisting of Hosts is a complicated simulation entity which takes the role
+        of resource management, Vm placement and Cloudlet scheduling.
+        It accepts most simulation events dispatched by Simulator and process them in high level
+        instead of continuouslly dispatching them to lower level components such as Hosts and Vms,
+        which makes the code tidy but may be a little hard to understand the code
+        """
         self.uuid = uuid1()
         self.host_running_dict = self._build_host_running_dict(host_list)
         self.vm_placement_policy = VmPlacementMaxFit()
@@ -65,6 +72,10 @@ class Datacenter(SimulationEntity):
             self.process_cloudlet_submit(event)
 
     def process_vm_bind(self, event: Event):
+        """
+        Bind submitted Vm to Host, it will bind all or none of the Vms in the submitted Vm list.
+        The bind strategy is max-fit
+        """
         extra_data = event.get_extra_data()
         simulator = extra_data["simulator"]
         vm_list = extra_data["vm_list"]
@@ -101,6 +112,9 @@ class Datacenter(SimulationEntity):
         simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_BIND, extra_data={"simulator": simulator}, start_time=simulator.get_global_clock()))
 
     def process_cloudlet_submit(self, event: Event) -> None:
+        """
+        Store all the submitted cloudlet in the waiting queue
+        """
         extra_data = event.get_extra_data()
         cloudlet_list = extra_data["cloudlet_list"]
         simulator = extra_data["simulator"]
@@ -111,6 +125,10 @@ class Datacenter(SimulationEntity):
         simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_BIND, extra_data={"simulator": simulator}, start_time=simulator.get_global_clock()))
 
     def processs_cloudlet_bind(self, event: Event) -> None:
+        """
+        Bind Cloudlets in the waiting queue as many as possibile util
+        the waiting queue is empty or there is no Vm resource left
+        """
         extra_data = event.get_extra_data()
         simulator = extra_data["simulator"]
         logger = Logger()

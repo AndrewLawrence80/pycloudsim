@@ -12,14 +12,6 @@ if TYPE_CHECKING:
 
 
 class Simulator(SimulationEntity):
-    """
-    A simulator is the core of cloud simulation, 
-    which maintains an event priority queue and
-    a global clock to perform event-driven simulation.
-    A simulator is also an event dispatcher, 
-    which accepts scheduled event from simulation entities 
-    and act properly when event occurs
-    """
     class State(Enum):
         """The simulation is initailized but not running yet"""
         INITIALIZED = 0
@@ -49,6 +41,16 @@ class Simulator(SimulationEntity):
                 return False
 
     def __init__(self) -> None:
+        """
+        A simulator is the core of cloud simulation, 
+        which maintains an event priority queue and
+        a global clock to perform event-driven simulation.
+        The events in event queue are ordered by start time.
+        Event with smallest start time comes to the top of heap.
+        A simulator is also an event dispatcher, 
+        which accepts scheduled event from simulation entities 
+        and act properly when event occurs
+        """
         self.event_queue = MinHeap(Simulator.event_comparator)
         self.global_clock_prev = 0.0
         self.global_clock = 0.0

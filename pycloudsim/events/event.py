@@ -127,12 +127,26 @@ class Event:
         """
         CLOUDLET_SUBMIT = 403
 
-    """
-    Event defines the general ``communication'' behaviors between datacenter entities,
-    helps the simulation in a loose coupling form
-    """
-
     def __init__(self, source: object = None, target: object = None, event_type: TYPE = None, extra_data: Dict = None, start_time: float = 0.0) -> None:
+        """
+        A Event is a event must be processed during simulation by entities which is a subclass of SimulationEntity.
+        It is also a "commnunication protocol" between simulation entities
+        
+        Parameters
+        ----------
+        source: object
+            The sender of the event, in most cases is ```None```, 
+        target: object
+            The receiver of the event that must process the event
+        event_type: TYPE
+            Event.TYPE defines different types of events which may occur during simulation
+        extra_data: Dict
+            Store the objects/messages the receiver may use when processes the event.
+            Using Python Dict to encapsulate is a more flexible way for data passing.
+            It is similar to Intent in Android programming
+        start_time: float
+            When the event will occur
+        """
         if event_type is None:
             raise ValueError("Event type can not be None")
         self.source = source

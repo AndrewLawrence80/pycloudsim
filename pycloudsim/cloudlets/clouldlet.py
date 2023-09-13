@@ -8,10 +8,6 @@ if TYPE_CHECKING:
 
 
 class Cloudlet:
-    """
-    A Cloudlet is the basic unit of an application/job/task to be executed by a Vm
-    """
-
     class State(Enum):
         """
         The Cloudlet is created but has not been submitted to the datacenter broker
@@ -50,6 +46,8 @@ class Cloudlet:
 
     def __init__(self, id: int = -1, length: int = 1, num_pes: int = 1, utilization_pe: float = 1.0, required_ram: float = 0.0, required_storage: float = 0.0, required_bandwidth=0.0) -> None:
         """
+        A Cloudlet is the basic unit of an application/job/task to be executed by a Vm
+        
         Parameters
         ----------
         id: int
@@ -62,6 +60,15 @@ class Cloudlet:
             The number of the required of CPU cores of the Cloudlet,
             if the number of the required CPU cannot be satisfied,
             the Cloudlet will be canceled
+        utilization_pe: float
+            The utilization rate of CPU cores when the Cloudlet runs on a Vm
+        required_ram: float
+            The required RAM (MB) when the Cloudlet runs on a Vm
+        required_storage: float
+            The required storage (MB) when the Cloudlet runs on a Vm,
+            the allocated storage will be released after Cloudlet leaves Vm
+        required_bandwidth: float
+            The required bandwidth (Mbps) when the Cloudlet runs on a Vm
         """
         self.uuid = uuid1()
         self.id = id

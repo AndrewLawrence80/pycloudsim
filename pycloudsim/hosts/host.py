@@ -11,15 +11,13 @@ if TYPE_CHECKING:
 
 
 class Host:
-    """
-    A Host is a physical machine composed of computing resources
-    such as Pe, RAM, bandwidth, storage, etc. 
-    In cloud computing scenarios, hosts are grouped together to form datacenters
-    and also basic unit to place a virtual machine (Vm)
-    """
-
     def __init__(self, pe_list: List[Pe], id: int = -1, size_ram: int = 32*1024, size_storage: int = 1024*1024, size_bandwidth: int = int(10*103)) -> None:
         """
+        A Host is a physical machine composed of computing resources
+        such as Pe, RAM, bandwidth, storage, etc. 
+        In cloud computing scenarios, hosts are grouped together to form datacenters
+        and also basic unit to place a virtual machine (Vm)
+        
         Parameters
         ----------
         pe_list: List[Pe]
