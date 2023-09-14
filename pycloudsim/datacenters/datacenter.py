@@ -90,9 +90,9 @@ class Datacenter(SimulationEntity):
         else:
             for vm_running in vm_running_placed_list:
                 self.vm_booting_dict[vm_running.get_uuid()] = vm_running
-                vm_running.set_state(Vm.State.RUNNING)
+                vm_running.set_state(Vm.State.BOUNDED)
                 simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_BOOTUP, extra_data={"vm": vm_running, "simulator": simulator}, start_time=vm_running.get_startup_delay()))
-                host = self.host_running_dict[vm_running.get_host_uuid()]
+                host = vm_running.get_host()
                 logger.info("%6.2f\tDatacenter\tBind Vm %d to Host %d" % (simulator.get_global_clock(), vm_running.get_id(), host.get_id()))
             logger.info("%6.2f\tDatacenter\tSucceed to bind vm to host" % simulator.get_global_clock())
 
@@ -137,6 +137,7 @@ class Datacenter(SimulationEntity):
                 break
             else:
                 for cloudlet_running in cloudlet_running_placed_list:
+                    cloudlet_running.set_state(Cloudlet.State.RUNNING)
                     vm_running = cloudlet_running.get_vm_running()
                     self.cloudlet_running_dict[cloudlet_running.get_uuid()] = cloudlet_running
                     cloudlet_running.set_start_time(simulator.get_global_clock())

@@ -11,15 +11,15 @@ import numpy as np
 
 config = {
     "host": {
-        "num": 32,  # Number of physical machines in the datacenter
-        "pes": 64,  # Number of CPU cores per host
+        "num": 2,  # Number of physical machines in the datacenter
+        "pes": 4,  # Number of CPU cores per host
         "mips": int(1e3),  # CPU rate in MIPS, 1 GHz
         "ram": np.iinfo(np.int32).max,  # Infinite RAM (MB)
         "bandwidth": np.iinfo(np.int32).max,  # Infinite bandwidth (Mbps)
         "storage": np.iinfo(np.int32).max  # Infinite storage (MB)
     },
     "vm": {
-        "num": 1024,  # Vm number
+        "num": 2,  # Vm number
         "pes": 2,  # CPU core(s) per Vm
         "host_mips_factor": 1,  # Same as host, assuming no performance loss
         "ram": 1024,  # 1 GB
@@ -30,7 +30,7 @@ config = {
     },
     "cloudlet": {
         "num": 5,  # Create 2 Cloudlets initially
-        "pes": 1,  # Required 1 CPU core(s)
+        "pes": 2,  # Required 1 CPU core(s)
         "length": int(1*1e3),  # 1s for 1 CPU core to run
         "utilization_pe": 1,  # 0 < x <= 1, here each cloudlet will use up 100% of CPU core of Vm
         "required_ram": 1,  # Required RAM size in MB
@@ -60,31 +60,36 @@ if __name__ == "__main__":
         vm_list.append(vm)
     broker.submit_vm_list(vm_list)
 
-    class DynamicIncomingCloudletListenter(CircularClockListener):
-        def __init__(self, cicular_interval: float) -> None:
-            super().__init__(cicular_interval)
-            self.num_incoming_cloudlet_list = [1024, 2048, 4096, 8192, 1024]
-            self.broker = None
-            self.num_cloudlet_created = 0
+    # class DynamicIncomingCloudletListenter(CircularClockListener):
+    #     def __init__(self, cicular_interval: float) -> None:
+    #         super().__init__(cicular_interval)
+    #         self.num_incoming_cloudlet_list = [1024, 2048, 4096, 8192, 1024]
+    #         self.broker = None
+    #         self.num_cloudlet_created = 0
 
-        def update(self, simulator: Simulator) -> None:
-            global_clock = simulator.get_global_clock()
-            idx = 0 if int(global_clock) == 0 else int(global_clock)//int(self.circular_interval)
-            if idx < len(self.num_incoming_cloudlet_list):
-                num_incoming_cloudlets = self.num_incoming_cloudlet_list[idx]
-                cloudlet_list = []
-                for _ in range(num_incoming_cloudlets):
-                    cloudlet_list.append(Cloudlet(self.num_cloudlet_created, config["cloudlet"]["length"], config["cloudlet"]["pes"], config["cloudlet"]["utilization_pe"],
-                                                  config["cloudlet"]["required_ram"], config["cloudlet"]["required_storage"], config["cloudlet"]["required_bandwidth"]))
-                    self.num_cloudlet_created += 1
-                self.broker.submit_cloudlet_list(cloudlet_list)
-                simulator.submit(Event(source=None, target=simulator, event_type=Event.TYPE.CIRCULAR_CLOCK_EVENT, extra_data=None, start_time=global_clock+self.circular_interval))
+    #     def update(self, simulator: Simulator) -> None:
+    #         global_clock = simulator.get_global_clock()
+    #         idx = 0 if int(global_clock) == 0 else int(global_clock)//int(self.circular_interval)
+    #         if idx < len(self.num_incoming_cloudlet_list):
+    #             num_incoming_cloudlets = self.num_incoming_cloudlet_list[idx]
+    #             cloudlet_list = []
+    #             for _ in range(num_incoming_cloudlets):
+    #                 cloudlet_list.append(Cloudlet(self.num_cloudlet_created, config["cloudlet"]["length"], config["cloudlet"]["pes"], config["cloudlet"]["utilization_pe"],
+    #                                               config["cloudlet"]["required_ram"], config["cloudlet"]["required_storage"], config["cloudlet"]["required_bandwidth"]))
+    #                 self.num_cloudlet_created += 1
+    #             self.broker.submit_cloudlet_list(cloudlet_list)
+    #             simulator.submit(Event(source=None, target=simulator, event_type=Event.TYPE.CIRCULAR_CLOCK_EVENT, extra_data=None, start_time=global_clock+self.circular_interval))
 
-        def set_broker(self, broker: Broker) -> None:
-            self.broker = broker
+    #     def set_broker(self, broker: Broker) -> None:
+    #         self.broker = broker
 
-    circular_listener_dynamic_incoming_cloudlet = DynamicIncomingCloudletListenter(60)
-    circular_listener_dynamic_incoming_cloudlet.set_broker(broker)
+    # circular_listener_dynamic_incoming_cloudlet = DynamicIncomingCloudletListenter(60)
+    # circular_listener_dynamic_incoming_cloudlet.set_broker(broker)
 
-    simulator.add_circular_clock_listener(circular_listener_dynamic_incoming_cloudlet)
+    # simulator.add_circular_clock_listener(circular_listener_dynamic_incoming_cloudlet)
+    cloudlet_list = []
+    for id in range(config["cloudlet"]["num"]):
+        cloudlet_list.append(Cloudlet(id, config["cloudlet"]["length"], config["cloudlet"]["pes"], config["cloudlet"]["utilization_pe"],
+                                      config["cloudlet"]["required_ram"], config["cloudlet"]["required_storage"], config["cloudlet"]["required_bandwidth"]))
+    broker.submit_cloudlet_list(cloudlet_list)
     simulator.run_util_pause_or_terminate()
