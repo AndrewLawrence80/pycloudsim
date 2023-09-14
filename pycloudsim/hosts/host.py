@@ -131,6 +131,8 @@ class Host:
         vm_running.set_host(self)
 
     def release_vm(self, vm_running: VmRunning) -> None:
+        vm_running.set_host(None)
+        
         self.vm_running_dict.pop(vm_running.get_uuid())
 
         self.vm_bandwidth_dict.pop(vm_running.get_bandwidth().get_uuid())

@@ -81,23 +81,19 @@ class Datacenter(SimulationEntity):
         vm_list = extra_data["vm_list"]
         logger = Logger()
         logger.info("%6.2f\tDatacenter\tTrying to bind vm to host" % simulator.get_global_clock())
-        vm_dict = {vm.get_uuid(): vm for vm in vm_list}
 
-        host_running_list_pre_fit = [copy.deepcopy(host) for host in self.host_running_dict.values()]
-        vm_running_list_pre_fit = [VmRunning(copy.deepcopy(vm)) for vm in vm_dict.values()]
-        fit_map = self.vm_placement_policy.get_fit_map(host_running_list_pre_fit, vm_running_list_pre_fit)
-        if fit_map is None:
+        is_placement_succeeded, vm_running_placed_list = self.vm_placement_policy.try_to_place([host for host in self.host_running_dict.values()], [VmRunning(vm) for vm in vm_list])
+        if not is_placement_succeeded:
+            for vm in vm_list:
+                vm.set_state(Vm.State.CANCELED)
             logger.warning("%6.2f\tDatacenter\tFailed to bind vms to host since there is no suitable host to accommodate all the vms")
         else:
-            for vm_uuid, host_uuid in fit_map.items():
-                vm = vm_dict[vm_uuid]
-                host = self.host_running_dict[host_uuid]
-                vm_to_run = VmRunning(vm)
-                host.bind_vm(vm_to_run)
-                self.vm_booting_dict[vm_uuid] = vm_to_run
-                simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_BOOTUP, extra_data={"vm": vm_to_run, "simulator": simulator}, start_time=simulator.get_global_clock()+vm_to_run.get_startup_delay()))
-                vm_to_run.set_state(Vm.State.BOUNDED)
-                logger.info("%6.2f\tDatacenter\tBind Vm %d to Host %d" % (simulator.get_global_clock(), vm_to_run.get_id(), host.get_id()))
+            for vm_running in vm_running_placed_list:
+                self.vm_booting_dict[vm_running.get_uuid()] = vm_running
+                vm_running.set_state(Vm.State.RUNNING)
+                simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_BOOTUP, extra_data={"vm": vm_running, "simulator": simulator}, start_time=vm_running.get_startup_delay()))
+                host = self.host_running_dict[vm_running.get_host_uuid()]
+                logger.info("%6.2f\tDatacenter\tBind Vm %d to Host %d" % (simulator.get_global_clock(), vm_running.get_id(), host.get_id()))
             logger.info("%6.2f\tDatacenter\tSucceed to bind vm to host" % simulator.get_global_clock())
 
     def process_vm_bootup(self, event: Event) -> None:
@@ -134,24 +130,20 @@ class Datacenter(SimulationEntity):
         logger = Logger()
         while not len(self.cloudlet_waiting_deque) == 0:
             cloudlet = self.cloudlet_waiting_deque.popleft()
-            vm_running_list_pre_fit = [copy.deepcopy(vm_running) for vm_running in self.vm_running_dict.values() if not vm_running.get_is_scheduled_to_shutdown()]
-            cloudlet_running_list_pre_fit = [CloudletRunning(copy.deepcopy(cloudlet))]
-            fit_map = self.cloudlet_placement_policy.git_fit_map(vm_running_list_pre_fit, cloudlet_running_list_pre_fit)
-            if fit_map is None:
+            is_placement_succeeded, cloudlet_running_placed_list = self.cloudlet_placement_policy.try_to_place([vm_running for vm_running in self.vm_running_dict.values() if not vm_running.get_is_scheduled_to_shutdown()], [CloudletRunning(cloudlet)])
+            if not is_placement_succeeded:
+                logger.warning("%6.2f\tDatacenter\tNo suitable Vm for Cloudlet %d, schedule will delay util there are available resources" % (simulator.get_global_clock(), cloudlet.get_id()))
                 self.cloudlet_waiting_deque.appendleft(cloudlet)
                 break
             else:
-                vm_running_uuid = list(fit_map.values())[0]
-                vm_running = self.vm_running_dict[vm_running_uuid]
-                cloudlet_running = CloudletRunning(cloudlet)
-                vm_running.bind_cloudlet(cloudlet_running)
-                logger.info("%6.2f\tDatacenter\tBind Cloudlet %d to Vm %d" % (simulator.get_global_clock(), cloudlet.get_id(), vm_running.get_id()))
-                cloudlet_running.set_state(Cloudlet.State.RUNNING)
-                self.cloudlet_running_dict[cloudlet_running.get_uuid()] = cloudlet_running
-                cloudlet_running.set_start_time(simulator.get_global_clock())
-                mips = vm_running.get_mips()
-                exec_time = round(cloudlet.get_length()/mips, 2)
-                simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_FINISH, extra_data={"cloudlet": cloudlet_running, "simulator": simulator}, start_time=simulator.get_global_clock()+exec_time))
+                for cloudlet_running in cloudlet_running_placed_list:
+                    vm_running = cloudlet_running.get_vm_running()
+                    self.cloudlet_running_dict[cloudlet_running.get_uuid()] = cloudlet_running
+                    cloudlet_running.set_start_time(simulator.get_global_clock())
+                    mips = vm_running.get_mips()
+                    exec_time = round(cloudlet.get_length()/mips, 2)
+                    simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_FINISH, extra_data={"cloudlet": cloudlet_running, "simulator": simulator}, start_time=simulator.get_global_clock()+exec_time))
+                    logger.info("%6.2f\tDatacenter\tBind Cloudlet %d to Vm %d" % (simulator.get_global_clock(), cloudlet.get_id(), vm_running.get_id()))
 
     def process_cloudlet_finish(self, event: Event) -> None:
         extra_data = event.get_extra_data()
@@ -198,7 +190,7 @@ class Datacenter(SimulationEntity):
         extra_data = event.get_extra_data()
         vm_running = extra_data["vm"]
         simulator = extra_data["simulator"]
-        host=vm_running.get_host()
+        host = vm_running.get_host()
         host.release_vm(vm_running)
         vm_running.set_state(Vm.State.DESTROYED)
         self.vm_running_dict.pop(vm_running.get_uuid())

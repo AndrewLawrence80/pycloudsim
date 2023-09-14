@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Dict
 if TYPE_CHECKING:
-    from typing import List
+    from typing import Dict,List,Tuple
     from ..hosts import Host
     from ..vms import VmRunning
 
 
 class VmPlacement:
-    def get_fit_map(self, source: List[Host], target: List[VmRunning]) -> Optional[Dict]:
+    def try_to_place(self, source: List[Host], target: List[VmRunning]) -> Tuple[bool,List[VmRunning]]:
         pass

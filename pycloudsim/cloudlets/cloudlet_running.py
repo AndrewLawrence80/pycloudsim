@@ -10,8 +10,8 @@ class CloudletRunning(Cloudlet):
     def __init__(self, cloudlet: Cloudlet) -> None:
         self.cloudlet = cloudlet
         self.vm_running = None
-        
-    def get_cloudlet(self)->Cloudlet:
+
+    def get_cloudlet(self) -> Cloudlet:
         return self.cloudlet
 
     def get_uuid(self) -> UUID:
@@ -59,9 +59,10 @@ class CloudletRunning(Cloudlet):
     def get_vm_uuid(self) -> UUID:
         return self.cloudlet.get_vm_uuid()
 
-    def set_vm_running(self, vm_running: VmRunning) -> None:
+    def set_vm_running(self, vm_running: Optional[VmRunning]) -> None:
         self.vm_running = vm_running
-        self.cloudlet.set_vm_uuid(vm_running.get_uuid())
+        if vm_running is not None:
+            self.cloudlet.set_vm_uuid(vm_running.get_uuid())
 
     def get_vm_running(self) -> Optional[VmRunning]:
         return self.vm_running

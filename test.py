@@ -11,15 +11,15 @@ import numpy as np
 
 config = {
     "host": {
-        "num": 2,  # Number of physical machines in the datacenter
-        "pes": 4,  # Number of CPU cores per host
+        "num": 32,  # Number of physical machines in the datacenter
+        "pes": 64,  # Number of CPU cores per host
         "mips": int(1e3),  # CPU rate in MIPS, 1 GHz
         "ram": np.iinfo(np.int32).max,  # Infinite RAM (MB)
         "bandwidth": np.iinfo(np.int32).max,  # Infinite bandwidth (Mbps)
         "storage": np.iinfo(np.int32).max  # Infinite storage (MB)
     },
     "vm": {
-        "num": 4,  # Vm number
+        "num": 1024,  # Vm number
         "pes": 2,  # CPU core(s) per Vm
         "host_mips_factor": 1,  # Same as host, assuming no performance loss
         "ram": 1024,  # 1 GB
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     class DynamicIncomingCloudletListenter(CircularClockListener):
         def __init__(self, cicular_interval: float) -> None:
             super().__init__(cicular_interval)
-            self.num_incoming_cloudlet_list = [8, 4, 16, 2, 1]
+            self.num_incoming_cloudlet_list = [1024, 2048, 4096, 8192, 1024]
             self.broker = None
             self.num_cloudlet_created = 0
 

@@ -127,6 +127,8 @@ class VmRunning(Vm):
         cloudlet_running.set_vm_running(self)
 
     def release_cloudlet(self, cloudlet_running: CloudletRunning) -> None:
+        cloudlet_running.set_vm_running(None)
+
         self.cloudlet_running_dict.pop(cloudlet_running.get_uuid())
 
         self.bandwidth.dealloate(cloudlet_running.get_required_bandwidth())
@@ -134,7 +136,7 @@ class VmRunning(Vm):
         self.storage.dealloate(cloudlet_running.get_required_storage())
 
         self.ram.dealloate(cloudlet_running.get_required_ram())
-        
+
         self.num_pes_available += cloudlet_running.get_num_pes()
 
         pe_uuid_list = self.cloudlet_running_pe_dict.pop(cloudlet_running.get_uuid())
@@ -143,7 +145,6 @@ class VmRunning(Vm):
             self.vm_pe_dict[pe_uuid].deallocate(cloudlet_running.get_utilization_pe())
             host_pe = self.host.get_host_pe_dict()[self.host.get_vm_pe_mapping()[pe_uuid]]
             host_pe.deallocate(cloudlet_running.get_utilization_pe())
-        
 
     def get_cloudlet_running_pe_dict(self) -> Dict[UUID, List[Pe]]:
         return self.cloudlet_running_pe_dict
@@ -154,6 +155,7 @@ class VmRunning(Vm):
     def get_host(self) -> Optional[Host]:
         return self.host
 
-    def set_host(self, host: Host):
+    def set_host(self, host: Optional[Host]):
         self.host = host
-        self.vm.set_host_uuid(host.get_uuid())
+        if host is not None:
+            self.vm.set_host_uuid(host.get_uuid())

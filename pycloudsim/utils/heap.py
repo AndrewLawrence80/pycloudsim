@@ -82,3 +82,16 @@ class MinHeap:
     def clear(self) -> None:
         while not self.is_empty():
             self.pop()
+
+if __name__ == '__main__':
+    import numpy as np
+    from uuid import uuid1
+
+    def comparator(a,b):
+        return a<b
+    dict_heap = MinHeap(comparator)
+    for _ in range(100):
+        dict_heap.push(np.random.randn())
+    print(dict_heap.peek())
+    for _ in range(100):
+        print(dict_heap.pop())
