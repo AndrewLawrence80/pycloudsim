@@ -41,7 +41,7 @@ class VmPlacementMaxFit(VmPlacement):
         for vm_to_run in vm_to_run_list:
             for host_suitability in host_suitability_heap:
                 host_suitability.update_suitability(vm_to_run)
-            host_suitability_heap.reheapify()
+            host_suitability_heap.heapify()
             suitability_head = host_suitability_heap.pop()
             if suitability_head.get_suitability() == False:
                 is_place_successful = False

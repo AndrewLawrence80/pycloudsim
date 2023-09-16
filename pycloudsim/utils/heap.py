@@ -4,6 +4,7 @@ from typing import Callable, Any
 class MinHeap:
     def __init__(self, comparator: Callable[[Any, Any], bool]) -> None:
         """
+        Heap implementation referring to https://algs4.cs.princeton.edu/24pq/
         Parameters
         ----------
         comparator: Callable
@@ -20,21 +21,42 @@ class MinHeap:
         self.heap[index_a] = self.heap[index_b]
         self.heap[index_b] = temp
 
-    def heapify(self, index: int) -> None:
-        min_index = index
-        left_index = 2*index+1
-        right_index = 2*index+2
-        if left_index < self.size and self.comparator(self.heap[left_index], self.heap[min_index]):
-            min_index = left_index
-        if right_index < self.size and self.comparator(self.heap[right_index], self.heap[min_index]):
-            min_index = right_index
-        if min_index != index:
-            self.swap(min_index, index)
-            self.heapify(min_index)
+    def get_left_index(self, index: int) -> int:
+        return 2*index+1
 
-    def reheapify(self) -> None:
+    def get_right_index(self, index) -> int:
+        return 2*index+2
+
+    def get_parent_index(self, index) -> int:
+        return (index-1)//2
+
+    def sink(self, index) -> None:
+        while index*2+1 < self.size:
+            min_index = index
+            left_index = self.get_left_index(index)
+            right_index = self.get_right_index(index)
+            if left_index < self.size and self.comparator(self.heap[left_index], self.heap[min_index]):
+                min_index = left_index
+            if right_index < self.size and self.comparator(self.heap[right_index], self.heap[min_index]):
+                min_index = right_index
+            if min_index != index:
+                self.swap(min_index, index)
+                index = min_index
+            else:
+                break
+
+    def swim(self, index) -> None:
+        while index > 0:
+            parent_index = self.get_parent_index(index)
+            if self.comparator(self.heap[index], self.heap[parent_index]):
+                self.swap(index, parent_index)
+                index = parent_index
+            else:
+                break
+
+    def heapify(self) -> None:
         for index in reversed(range(self.size//2)):
-            self.heapify(index)
+            self.sink(index)
 
     def peek(self) -> Any:
         if self.size <= 0:
@@ -47,7 +69,7 @@ class MinHeap:
         top = self.heap[0]
         self.swap(0, self.size-1)
         self.size -= 1
-        self.heapify(0)
+        self.sink(0)
         # Since pop() method simply put top element
         # to the end of the heap, it is necessary
         # to clean up the heap when it is too large
@@ -60,20 +82,20 @@ class MinHeap:
         return top
 
     def push(self, item: Any) -> None:
-        # The implementation here consider more abount the performance
         if self.size == len(self.heap):
             self.heap.append(item)  # Ensure heap size increase by 1
+        else:
+            self.heap[self.size] = item
         self.size += 1
         index = self.size-1
-        while index > 0 and self.comparator(item, self.heap[(index-1)//2]):
-            self.heap[index] = self.heap[(index-1)//2]
-            index = (index-1)//2
-        self.heap[index] = item  # Where actual push action happens
+        self.swim(index)
 
     def is_empty(self) -> bool:
         return self.size == 0
 
     def __getitem__(self, index) -> Any:
+        if index >= self.size:
+            raise IndexError("Index out of range")
         return self.heap[index]
 
     def get_size(self) -> int:
@@ -82,16 +104,3 @@ class MinHeap:
     def clear(self) -> None:
         while not self.is_empty():
             self.pop()
-
-if __name__ == '__main__':
-    import numpy as np
-    from uuid import uuid1
-
-    def comparator(a,b):
-        return a<b
-    dict_heap = MinHeap(comparator)
-    for _ in range(100):
-        dict_heap.push(np.random.randn())
-    print(dict_heap.peek())
-    for _ in range(100):
-        print(dict_heap.pop())

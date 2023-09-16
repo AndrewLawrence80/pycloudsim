@@ -38,7 +38,7 @@ class CloudletPlacementMaxFit(CloudletPlacement):
         for cloudlet_to_run in cloudlet_to_run_list:
             for vm_suitability in vm_suitability_heap:
                 vm_suitability.update_suitability(cloudlet_to_run)
-            vm_suitability_heap.reheapify()
+            vm_suitability_heap.heapify()
             suitability_head = vm_suitability_heap.pop()
             if suitability_head.get_suitability() == False:
                 is_place_successful = False
