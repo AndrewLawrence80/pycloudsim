@@ -114,8 +114,11 @@ class Simulator(SimulationEntity):
     def get_state(self) -> State:
         return self.state
 
-    def set_stat(self, state: State):
+    def set_state(self, state: State):
         self.state = state
 
     def set_datacenter(self, datacenter: Datacenter):
         self.datacenter = datacenter
+        
+    def get_datacenter(self)->Datacenter:
+        return self.datacenter

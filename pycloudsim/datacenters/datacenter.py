@@ -8,7 +8,7 @@ from ..vms import Vm, VmRunning
 from ..cloudlets import Cloudlet, CloudletRunning
 from collections import deque
 from uuid import uuid1, UUID
-from typing import List, TYPE_CHECKING, Dict
+from typing import List, TYPE_CHECKING, Dict, Deque
 import copy
 if TYPE_CHECKING:
     from ..hosts import Host
@@ -91,7 +91,7 @@ class Datacenter(SimulationEntity):
             for vm_running in vm_running_placed_list:
                 self.vm_booting_dict[vm_running.get_uuid()] = vm_running
                 vm_running.set_state(Vm.State.BOUNDED)
-                simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_BOOTUP, extra_data={"vm": vm_running, "simulator": simulator}, start_time=vm_running.get_startup_delay()))
+                simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_BOOTUP, extra_data={"vm": vm_running, "simulator": simulator}, start_time=simulator.get_global_clock()+vm_running.get_startup_delay()))
                 host = vm_running.get_host()
                 logger.info("%6.2f\tDatacenter\tBind Vm %d to Host %d" % (simulator.get_global_clock(), vm_running.get_id(), host.get_id()))
             logger.info("%6.2f\tDatacenter\tSucceed to bind vm to host" % simulator.get_global_clock())
@@ -142,7 +142,7 @@ class Datacenter(SimulationEntity):
                     self.cloudlet_running_dict[cloudlet_running.get_uuid()] = cloudlet_running
                     cloudlet_running.set_start_time(simulator.get_global_clock())
                     mips = vm_running.get_mips()
-                    exec_time = round(cloudlet.get_length()/mips, 2)
+                    exec_time = round(cloudlet.get_length()/(mips*cloudlet.get_utilization_pe()), 2)
                     simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_FINISH, extra_data={"cloudlet": cloudlet_running, "simulator": simulator}, start_time=simulator.get_global_clock()+exec_time))
                     logger.info("%6.2f\tDatacenter\tBind Cloudlet %d to Vm %d" % (simulator.get_global_clock(), cloudlet.get_id(), vm_running.get_id()))
 
@@ -198,3 +198,12 @@ class Datacenter(SimulationEntity):
         self.vm_end_of_life_dict[vm_running.get_uuid()] = vm_running.get_vm()
         logger = Logger()
         logger.info("%6.2f\tDatacenter\tVm %d destroyed on Host %d" % (simulator.get_global_clock(), vm_running.get_id(), host.get_id()))
+
+    def get_host_running_dict(self) -> Dict[Host]:
+        return self.host_running_dict
+
+    def get_vm_running_dict(self) -> Dict[VmRunning]:
+        return self.vm_running_dict
+
+    def get_cloudlet_waiting_deque(self) -> Deque[Cloudlet]:
+        return self.cloudlet_waiting_deque
