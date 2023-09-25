@@ -18,7 +18,7 @@ class Simulator(SimulationEntity):
         """The simulation is running"""
         RUNNING = 1
         """The simulation is paused"""
-        PAUSED = 1
+        PAUSED = 2
         """The simulation end normaly or the terminate time arrives"""
 
     def event_comparator(event_a: Event, event_b: Event) -> bool:
