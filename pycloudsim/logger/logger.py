@@ -18,8 +18,7 @@ class Logger:
                     logger = logging.getLogger(__name__)
                     logger.setLevel(logging.DEBUG)
                     logger_handler = logging.StreamHandler(sys.stdout)
-                    logger_formater = logging.Formatter(
-                        "%(levelname)s\t%(message)s")
+                    logger_formater = logging.Formatter("%(levelname)s\t%(message)s")
                     logger_handler.setFormatter(logger_formater)
                     logger.addHandler(logger_handler)
                     cls._instance = logger
