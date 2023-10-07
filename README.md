@@ -8,3 +8,7 @@ Just a runnable skeleton
 1. Event-based simulation
 2. Vm submission, bind and run
 3. Cloudlet submission, bind and run
+
+## Branch ```no-save```
+
+All ```Vm```s and ```Cloudlet```s will be discarded after execution done

@@ -28,11 +28,11 @@ class Datacenter(SimulationEntity):
         self.vm_placement_policy = VmPlacementMaxFit()
         self.vm_booting_dict = {}
         self.vm_running_dict = {}
-        self.vm_end_of_life_dict = {}
+        # self.vm_end_of_life_dict = {}
         self.cloudlet_placement_policy = CloudletPlacementMaxFit()
         self.cloudlet_waiting_deque = deque([])
         self.cloudlet_running_dict = {}
-        self.cloudlet_end_of_life_dict = {}
+        # self.cloudlet_end_of_life_dict = {}
 
     def _build_host_running_dict(self, host_list: List[Host]) -> Dict[UUID, Host]:
         host_running_dict = {}
@@ -155,7 +155,7 @@ class Datacenter(SimulationEntity):
         vm_running = self.vm_running_dict[cloudlet_running.get_vm_running().get_uuid()]
         vm_running.release_cloudlet(cloudlet_running)
         cloudlet_running.set_state(Cloudlet.State.SUCCEEDED)
-        self.cloudlet_end_of_life_dict[cloudlet_running.get_uuid()] = cloudlet_running.get_cloudlet()
+        # self.cloudlet_end_of_life_dict[cloudlet_running.get_uuid()] = cloudlet_running.get_cloudlet()
         logger = Logger()
         logger.info("%6.2f\tDatacenter\tCloudlet %d exection done at Vm %d" % (simulator.get_global_clock(), cloudlet_running.get_id(), vm_running.get_id()))
         simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.CLOUDLET_BIND, extra_data={"simulator": simulator}, start_time=simulator.get_global_clock()))
@@ -175,7 +175,7 @@ class Datacenter(SimulationEntity):
             vm_running.release_cloudlet(cloudlet_running)
             cloudlet_running.set_state(Cloudlet.State.FAILED)
             self.cloudlet_running_dict.pop(cloudlet_running.get_uuid())
-            self.cloudlet_end_of_life_dict[cloudlet_running.get_uuid()] = cloudlet_running.get_cloudlet()
+            # self.cloudlet_end_of_life_dict[cloudlet_running.get_uuid()] = cloudlet_running.get_cloudlet()
         simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_DESTORY, extra_data={"vm": vm_running, "simulator": simulator}, start_time=simulator.get_global_clock()+vm_running.get_shutdown_delay()))
 
     def process_simulation_terminate(self, event: Event) -> None:
@@ -185,7 +185,7 @@ class Datacenter(SimulationEntity):
             simulator.submit(Event(source=None, target=self, event_type=Event.TYPE.VM_SHUTDOWN, extra_data={"vm": vm_running, "simulator": simulator}, start_time=simulator.get_global_clock()))
         for cloudlet in self.cloudlet_waiting_deque:
             cloudlet.set_state(Cloudlet.State.CANCELED)
-            self.cloudlet_end_of_life_dict[cloudlet.get_uuid()] = cloudlet
+            # self.cloudlet_end_of_life_dict[cloudlet.get_uuid()] = cloudlet
 
     def process_vm_destroy(self, event: Event) -> None:
         extra_data = event.get_extra_data()
@@ -195,7 +195,7 @@ class Datacenter(SimulationEntity):
         host.release_vm(vm_running)
         vm_running.set_state(Vm.State.DESTROYED)
         self.vm_running_dict.pop(vm_running.get_uuid())
-        self.vm_end_of_life_dict[vm_running.get_uuid()] = vm_running.get_vm()
+        # self.vm_end_of_life_dict[vm_running.get_uuid()] = vm_running.get_vm()
         logger = Logger()
         logger.info("%6.2f\tDatacenter\tVm %d destroyed on Host %d" % (simulator.get_global_clock(), vm_running.get_id(), host.get_id()))
 
