@@ -13,7 +13,7 @@ class HostSuitability:
     def update_suitability(self, target: VmRunning) -> bool:
         self.suitability = False
         if (
-            target.get_num_pes() <= self.host.get_num_pes() and
+            target.get_num_pes() <= self.host.get_num_pes_available() and
             target.get_size_ram() <= self.host.get_ram().get_size_available() and
             target.get_size_storage() <= self.host.get_storage().get_size_available() and
             target.get_size_bandwidth() <= self.host.get_bandwidth().get_size_available()
