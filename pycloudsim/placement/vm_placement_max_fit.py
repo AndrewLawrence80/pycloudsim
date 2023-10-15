@@ -54,6 +54,6 @@ class VmPlacementMaxFit(VmPlacement):
         if not is_place_successful:
             for vm_running in vm_running_placed_list:
                 host=vm_running.get_host()
-                host.release_vm_running(vm_running)
+                host.release_vm(vm_running)
         
         return is_place_successful,vm_running_placed_list
